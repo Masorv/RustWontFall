@@ -115,8 +115,15 @@ section.dark .eyebrow{color:#e79a6a}
 }
 
 /* ---------- таблица с точечными выносками ---------- */
-table.leaders{width:auto; min-width:100%}
-table.leaders td:first-child{white-space:nowrap}
+/* width:auto позволял таблице выйти за пределы колонки: точки из первого
+   столбца вылезали в соседнюю колонку. Фиксируем ширину по контейнеру,
+   а точки обрезаем краем ячейки (overflow:hidden). */
+table.leaders{width:100%; min-width:0}
+table.leaders th:first-child{width:36%}
+table.leaders td:first-child{white-space:nowrap; overflow:hidden}
+@media (max-width:820px){
+  table.leaders th:first-child{width:34%}
+}
 @media (min-width:900px){
   table.leaders td:first-child::after{
     content:" ....................................................................";
