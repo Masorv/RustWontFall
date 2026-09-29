@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 250" width="320" height="250" role="img" aria-label="Монитор с сообщением компилятора вместо падения программы">
+  <title>Сообщение компилятора на экране</title>
+  <rect x="8" y="8" width="304" height="196" rx="4" fill="#1a1a1a"/>
+  <rect x="22" y="22" width="276" height="152" fill="#101413"/>
+  <!-- строка-шапка терминала -->
+  <rect x="22" y="22" width="276" height="16" fill="#22312d"/>
+  <circle cx="33" cy="30" r="3.4" fill="#b7410e"/>
+  <circle cx="45" cy="30" r="3.4" fill="#2e7d32"/>
+  <circle cx="57" cy="30" r="3.4" fill="#d8c9a3"/>
+  <!-- текст ошибки: строки -->
+  <g fill="#cfe3d6">
+    <rect x="34" y="52" width="150" height="6"/>
+    <rect x="34" y="66" width="112" height="6"/>
+    <rect x="34" y="88" width="186" height="6"/>
+    <rect x="34" y="102" width="96" height="6"/>
+  </g>
+  <rect x="34" y="116" width="150" height="6" fill="#c9302c"/>
+  <rect x="34" y="130" width="80" height="6" fill="#c9302c"/>
+  <rect x="34" y="150" width="60" height="6" fill="#2e7d6e"/>
+  <!-- подсветка строки с ошибкой -->
+  <rect x="30" y="112" width="262" height="28" fill="none" stroke="#c9302c" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- подставка -->
+  <rect x="132" y="204" width="56" height="22" fill="#1a1a1a"/>
+  <rect x="96" y="226" width="128" height="14" rx="3" fill="#1a1a1a"/>
+</svg>

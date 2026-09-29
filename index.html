@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rust: не падает — курс системного программирования FERRIS LAB</title>
+<meta name="description" content="FERRIS LAB, курс «Rust: не падает»: восемь недель практики по системному программированию. Реклама курса в стилистике 2018 года.">
+<style>
+:root{
+  --rust:#b7410e; --rust-dark:#8a2f0b; --sand:#f2ede3; --paper:#fbf8f1;
+  --ink:#22201e; --muted:#6c665c; --line:#ded5c3; --teal:#2e7d6e;
+  --red:#c9302c; --green:#2e7d32;
+  --sans:"Segoe UI","PT Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --serif:Georgia,"PT Serif","Times New Roman",serif;
+  --mono:Consolas,"Courier New",monospace;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:var(--sans); color:var(--ink); background:var(--paper);
+  font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:0 24px}
+h1,h2,h3{line-height:1.15; margin:0 0 .5em}
+h2{font-size:2.1rem; letter-spacing:-.01em}
+p{margin:0 0 1em}
+a{color:var(--rust)}
+.eyebrow{
+  text-transform:uppercase; letter-spacing:.14em; font-size:12px;
+  font-weight:700; color:var(--rust); margin:0 0 10px;
+}
+.lede{font-size:1.15rem; color:var(--muted)}
+section{padding:56px 0; border-top:1px solid var(--line)}
+section.tint{background:var(--sand)}
+section.dark{background:#241f1c; color:#f4efe6; border-top:0}
+section.dark .lede, section.dark .muted{color:#c3b8a6}
+section.dark .eyebrow{color:#e79a6a}
+
+/* ---------- шапка ---------- */
+.topbar{background:#fff; border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex; align-items:center; gap:18px; padding-top:14px; padding-bottom:14px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.04em; text-decoration:none; color:var(--ink)}
+.brand span small{display:block; font-weight:400; color:var(--muted); letter-spacing:0; font-size:12px}
+.topnav{margin-left:auto; display:flex; gap:18px; flex-wrap:wrap; font-size:14px}
+.topnav a{color:var(--ink); text-decoration:none; border-bottom:2px solid transparent; padding-bottom:2px}
+.topnav a:hover{border-color:var(--rust)}
+.stamp{
+  font-family:var(--mono); font-size:12px; border:1px solid var(--rust);
+  color:var(--rust); padding:4px 8px; border-radius:2px; background:#fff;
+}
+
+/* ---------- кнопки ---------- */
+.btn{
+  display:inline-block; font-family:var(--sans); font-size:16px; font-weight:700;
+  padding:13px 26px; border-radius:3px; border:1px solid var(--rust-dark);
+  background:var(--rust); color:#fff; text-decoration:none; cursor:pointer;
+  box-shadow:0 2px 4px rgba(0,0,0,.18);
+}
+.btn:hover{background:var(--rust-dark)}
+.btn.ghost{background:#fff; color:var(--rust-dark); box-shadow:0 2px 4px rgba(0,0,0,.10)}
+.btn.ghost:hover{background:#f6f1e6}
+.btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible{
+  outline:2px solid var(--teal); outline-offset:2px;
+}
+
+/* ---------- фактура эпохи: полутоновый растр ---------- */
+.dotted{
+  background-image:url("assets/images/halftone-dots.svg");
+  background-repeat:repeat;
+}
+.dotted::before{
+  content:""; position:absolute; inset:0; background:inherit;
+  opacity:.5; pointer-events:none; z-index:0;
+}
+.dotted > .wrap{position:relative; z-index:1}
+
+/* ---------- ленточная плашка в углу ---------- */
+.corner{position:relative}
+.corner .ribbon{
+  position:absolute; top:18px; right:0; z-index:2;
+  display:flex; align-items:center; gap:8px;
+  background:var(--green); color:#fff; font-size:12.5px; font-weight:700;
+  padding:8px 16px 8px 12px; box-shadow:0 2px 4px rgba(0,0,0,.2);
+  border-radius:0 0 0 4px; max-width:100%;
+}
+.corner .ribbon img{width:20px; height:20px; display:block}
+
+/* ---------- герой ---------- */
+.hero{
+  padding:70px 0 60px; background-color:var(--sand);
+  border-bottom:1px solid var(--line); position:relative;
+}
+.hero-grid{display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap}
+.hero-main{flex:1 1 460px}
+.hero h1{font-size:3.4rem; letter-spacing:-.02em; margin:6px 0 14px}
+.hero h1 em{font-style:normal; color:var(--rust)}
+.price{display:flex; align-items:baseline; gap:14px; margin:26px 0 22px; flex-wrap:wrap}
+.price b{font-size:2.1rem; color:var(--rust)}
+.price s{color:var(--muted)}
+.price small{color:var(--muted); display:block; font-size:13px}
+.factbar{display:flex; gap:10px; flex-wrap:wrap; margin:28px 0 0; padding:0; list-style:none}
+.factbar li{
+  font-family:var(--mono); font-size:13px; background:#fff; border:1px solid var(--line);
+  border-radius:2px; padding:7px 11px; box-shadow:0 1px 0 var(--line);
+}
+.joke{
+  border:2px solid var(--rust); background:#fff; padding:18px 20px; margin:26px 0 0;
+  box-shadow:0 2px 0 rgba(183,65,14,.25);
+}
+.joke b{color:var(--rust)}
+.hero-side{flex:0 0 240px; text-align:center}
+.hero-side img{width:220px; height:auto}
+.ribbon{
+  display:inline-block; background:#2e7d32; color:#fff; font-size:12px; font-weight:700;
+  padding:6px 12px; border-radius:2px; margin-top:14px;
+}
+
+/* ---------- таблица с точечными выносками ---------- */
+table.leaders{width:auto; min-width:100%}
+table.leaders td:first-child{white-space:nowrap}
+@media (min-width:900px){
+  table.leaders td:first-child::after{
+    content:" ....................................................................";
+    color:#b9ae99;
+  }
+}
+
+/* ---------- семисегментное табло обратного отсчёта ---------- */
+.seven{display:flex; align-items:center; gap:5px; margin:20px 0 4px; flex-wrap:wrap}
+.seven .seg{
+  font-family:var(--mono); font-size:28px; line-height:1; color:var(--red);
+  background:#170f0f; border:1px solid #43302e; border-radius:2px;
+  padding:9px 11px; box-shadow:inset 0 0 0 1px #0b0707;
+}
+.seven small{align-self:center; color:#c3b8a6; font-family:var(--sans); font-size:14px; margin-left:10px}
+
+/* ---------- шкала мест в группе ---------- */
+.seats{margin:22px 0 0; max-width:420px}
+.seats .bar{height:14px; background:#170f0f; border:1px solid #43302e; border-radius:2px; overflow:hidden}
+.seats .bar i{display:block; height:100%; width:67%; background:var(--rust)}
+.seats p{font-family:var(--mono); font-size:13px; color:#c3b8a6; margin:8px 0 0}
+
+/* ---------- карточки ---------- */
+/* flex-элементы по умолчанию не сжимаются уже своего содержимого:
+   без min-width:0 длинная строка в таблице растягивает секцию */
+.req-grid > div, .enroll-grid > div, .hero-main, .code figure,
+.rules > *, .beforeafter > div, .card, .tile, .pics figure{min-width:0}
+.cards{display:flex; gap:20px; flex-wrap:wrap; margin:30px 0 0}
+.card{
+  flex:1 1 230px; background:#fff; border:1px solid var(--line); border-radius:3px;
+  padding:20px; box-shadow:0 2px 4px rgba(0,0,0,.06);
+}
+.card h3{font-size:1.05rem; margin:12px 0 8px}
+.card .num{
+  display:inline-flex; width:32px; height:32px; border-radius:50%;
+  background:var(--rust); color:#fff; align-items:center; justify-content:center;
+  font-weight:700; font-size:14px;
+}
+.card p{font-size:15px; color:#4b463f; margin:0}
+.statline{
+  display:flex; gap:0; flex-wrap:wrap; margin:30px 0 0; border:1px solid var(--line);
+  border-radius:3px; overflow:hidden; background:#fff;
+}
+.statline div{flex:1 1 150px; padding:16px; border-right:1px solid var(--line)}
+.statline div:last-child{border-right:0}
+.statline b{display:block; font-family:var(--mono); color:var(--rust); font-size:1.3rem}
+.statline span{font-size:13px; color:var(--muted)}
+
+/* ---------- код ---------- */
+.code{
+  display:flex; gap:20px; flex-wrap:wrap; margin:26px 0 0;
+}
+.code figure{
+  flex:1 1 320px; margin:0; border:1px solid var(--line); border-radius:3px;
+  overflow:hidden; background:#fff; box-shadow:0 2px 4px rgba(0,0,0,.06);
+}
+.code figcaption{
+  font-size:13px; font-weight:700; padding:9px 14px; background:#efe8da;
+  border-bottom:1px solid var(--line);
+}
+.code pre{
+  margin:0; padding:16px; font-family:var(--mono); font-size:13.5px; line-height:1.55;
+  overflow:auto; background:#101413; color:#d7e5da;
+}
+.code .kw{color:#7fc7a8}
+.code .err{color:#e8635e}
+.code .num{color:#e0a86a}
+.code .cm{color:#7d8a84}
+
+/* ---------- таблицы ---------- */
+table{width:100%; border-collapse:collapse; margin:20px 0 0; font-size:15px; table-layout:fixed}
+th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; overflow-wrap:break-word}
+th{background:#efe8da; font-size:13px; text-transform:uppercase; letter-spacing:.06em}
+table.mono td:first-child{font-family:var(--mono)}
+table.mono{font-size:14.5px}
+table.mono th:first-child{width:30%}
+
+/* ---------- правила владения ---------- */
+.rules{display:flex; gap:18px; flex-wrap:wrap; margin:26px 0 0}
+.rule{
+  flex:1 1 200px; background:#fff; border:1px solid var(--line); border-left:5px solid var(--rust);
+  padding:16px 18px; border-radius:3px; box-shadow:0 2px 4px rgba(0,0,0,.06);
+}
+.rule h4{margin:0 0 6px; font-size:1rem}
+.rule code{font-family:var(--mono); font-size:13px; color:var(--rust-dark)}
+.rule p{margin:6px 0 0; font-size:14.5px; color:#4b463f}
+.diagram{display:flex; align-items:stretch; gap:12px; flex-wrap:wrap; margin:24px 0 0}
+.diagram .node{
+  flex:1 1 200px; background:#241f1c; color:#f4efe6; border-radius:3px; padding:16px 18px;
+  border:1px solid #3a322c;
+}
+.diagram .node b{color:#e79a6a; display:block; font-size:1.05rem; margin-bottom:6px}
+.diagram .node span{font-size:14px; color:#c3b8a6}
+.diagram .arrow{align-self:center; color:var(--rust); font-size:26px; font-weight:700}
+
+/* ---------- отзыв ---------- */
+.quote{background:#fff; border:1px solid var(--line); border-radius:3px; padding:28px; box-shadow:0 2px 4px rgba(0,0,0,.06)}
+.quote blockquote{margin:0 0 18px; font-size:1.3rem; line-height:1.45; font-family:var(--serif)}
+.who{display:flex; align-items:center; gap:14px}
+.avatar{width:56px; height:56px; border-radius:50%; background:var(--rust); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:20px}
+.who small{display:block; color:var(--muted)}
+.beforeafter{display:flex; gap:18px; flex-wrap:wrap; margin:24px 0 0}
+.beforeafter div{
+  flex:1 1 200px; border:1px solid var(--line); border-radius:3px; padding:16px; background:#fff;
+}
+.beforeafter b{display:block; font-size:13px; text-transform:uppercase; letter-spacing:.08em; margin-bottom:6px; color:var(--muted)}
+.beforeafter p{margin:0; font-size:15px}
+.after{border-left:5px solid var(--green) !important}
+
+/* ---------- журнальная полоса ---------- */
+.ad{
+  background:#fdfbf5; border:3px double #b9ab8d; padding:22px 26px; border-radius:2px;
+  font-family:var(--serif); margin:26px 0 0;
+}
+.ad .folio{font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:#8a7f68; border-bottom:1px solid #ddd3bd; padding-bottom:8px}
+.ad h3{font-size:2rem; letter-spacing:.16em; text-transform:uppercase; margin:18px 0 14px; text-align:center}
+.ad .cols{column-count:2; column-gap:28px; column-rule:1px solid #ddd3bd; font-size:15.5px; text-align:justify}
+.ad .cols p{margin-bottom:.9em; text-indent:1.2em}
+.ad .folio-foot{font-family:var(--mono); font-size:12px; color:#6b6252; border-top:1px solid #ddd3bd; margin-top:14px; padding-top:8px; text-align:center}
+.adnote{font-size:13.5px; color:var(--muted); margin-top:12px}
+
+/* ---------- стена клиентов ---------- */
+.wall{display:flex; flex-wrap:wrap; gap:16px; margin:26px 0 0}
+.tile{
+  flex:1 1 200px; background:#fff; border:1px solid var(--line); border-radius:3px;
+  padding:16px; box-shadow:0 2px 4px rgba(0,0,0,.06);
+}
+.tile .mark{
+  display:flex; align-items:center; justify-content:center; height:44px; margin-bottom:10px;
+  background:#f1ece1; border:1px solid var(--line); color:#8d8577; font-weight:700;
+  letter-spacing:.18em; font-size:15px; border-radius:2px;
+}
+.tile b{display:block; margin-bottom:6px}
+.tile p{margin:0; font-size:14px; color:#4b463f}
+.tile .ru{display:block; margin-top:6px; color:var(--muted); font-size:13px}
+.bars{display:flex; gap:24px; flex-wrap:wrap; margin:28px 0 0; align-items:flex-end}
+.bars .bar{flex:1 1 180px; text-align:center; font-family:var(--mono); font-size:13px; color:var(--muted)}
+.bars .col{width:70%; margin:0 auto 8px; background:#efe8da; border:1px solid var(--line); border-radius:2px 2px 0 0; position:relative}
+.bars .bar.hi .col{background:var(--rust); border-color:var(--rust-dark)}
+.bars .bar .v{position:absolute; top:-26px; left:0; right:0; font-weight:700; font-size:18px; color:var(--ink)}
+
+/* ---------- требования ---------- */
+.req-grid{display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start}
+.req-grid > div:first-child{flex:1 1 420px}
+.req-grid > div:last-child{flex:1 1 280px}
+.pics{display:flex; gap:14px; flex-wrap:wrap; margin:24px 0 0; align-items:flex-start}
+.pics figure{margin:0; flex:0 1 auto}
+.pics img{display:block; height:auto; max-width:100%}
+.pics figcaption{font-size:12.5px; color:var(--muted); margin-top:6px; max-width:220px}
+.warn{
+  font-family:var(--mono); font-size:14px; background:#fff8e6; border:1px solid #e0cf9a;
+  border-radius:3px; padding:14px 16px; margin:20px 0 0;
+}
+
+/* ---------- запись ---------- */
+.enroll-grid{display:flex; gap:32px; flex-wrap:wrap; align-items:flex-start}
+.enroll-grid > div:first-child{flex:1 1 380px}
+.enroll-grid > div:last-child{flex:1 1 320px}
+.seven{
+  display:flex; gap:4px; margin:18px 0 6px; flex-wrap:wrap;
+}
+.seven span{
+  font-family:var(--mono); font-size:30px; line-height:1; color:var(--red);
+  background:#1a1010; border:1px solid #3a2422; padding:8px 10px; border-radius:2px;
+}
+.seven small{align-self:center; color:#c3b8a6; font-family:var(--sans); font-size:14px; margin-left:8px}
+.terms{list-style:none; padding:0; margin:22px 0 0}
+.terms li{
+  padding-left:30px; position:relative; margin-bottom:10px; font-size:15.5px;
+}
+.terms li::before{content:"✓"; position:absolute; left:0; color:var(--green); font-weight:700}
+form{background:#fff; border:1px solid var(--line); border-radius:3px; padding:22px; box-shadow:0 2px 4px rgba(0,0,0,.06)}
+.field{margin-bottom:16px}
+.field label{display:block; font-size:13px; font-weight:700; margin-bottom:6px; color:#4b463f}
+.field input[type=text], .field input[type=email], .field select{
+  width:100%; padding:10px 12px; border:1px solid #cfc6b2; border-radius:2px;
+  font-family:var(--sans); font-size:15px; background:#fffdf8; color:var(--ink);
+}
+.check{display:flex; gap:10px; align-items:flex-start; font-size:15px; margin-bottom:18px}
+.done{display:none; border:1px solid var(--green); background:#f1f8f1; border-radius:3px; padding:16px; margin-top:16px; font-size:15px}
+.done.on{display:block}
+.perks{display:flex; flex-wrap:wrap; gap:8px 22px; margin:20px 0 0; padding:0; list-style:none; font-size:15px}
+.perks li{padding-left:20px; position:relative}
+.perks li::before{content:"·"; position:absolute; left:8px; color:var(--rust); font-weight:700}
+
+footer{background:#241f1c; color:#c3b8a6; font-size:14px; padding:36px 0 44px}
+footer h4{color:#f4efe6; margin:0 0 10px; font-size:15px; text-transform:uppercase; letter-spacing:.1em}
+footer a{color:#e79a6a}
+footer .cols{display:flex; gap:30px; flex-wrap:wrap}
+footer .cols > div{flex:1 1 240px}
+footer .disclaimer{border-top:1px solid #3a322c; margin-top:24px; padding-top:16px; font-size:13px}
+
+@media (max-width:820px){
+  h2{font-size:1.7rem}
+  .hero h1{font-size:2.4rem}
+  .ad .cols{column-count:1}
+  .diagram .arrow{transform:rotate(90deg)}
+  .hero{padding-top:96px}
+  .corner .ribbon{left:0; right:0; justify-content:center; border-radius:0 0 4px 4px}
+  table.mono th:first-child{width:38%}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <img src="assets/images/hexnut-logo.svg" width="34" height="34" alt="Знак FERRIS LAB">
+      <span>FERRIS LAB<small>лаборатория системного программирования</small></span>
+    </a>
+    <nav class="topnav">
+      <a href="#promise">Почему Rust</a>
+      <a href="#program">Программа</a>
+      <a href="#ownership">Владение</a>
+      <a href="#story">Отзыв</a>
+      <a href="#clients">Кто пишет</a>
+      <a href="#signup">Записаться</a>
+    </nav>
+    <span class="stamp">05.09.2018</span>
+  </div>
+</header>
+
+<!-- 01 -->
+<section class="hero dotted corner" id="top">
+  <span class="ribbon"><img src="assets/images/floppy.svg" alt="">Диск с примерами и заготовками лабораторных</span>
+  <div class="wrap hero-grid">
+    <div class="hero-main">
+      <p class="eyebrow">Курс системного программирования · Кемерово · осень 2018</p>
+      <h1>Rust: <em>не падает</em></h1>
+      <p class="lede">Восемь недель практики с первого занятия. После курса вы пишете код,
+      который не может упасть из-за чужой ошибки, — потому что такую ошибку компилятор
+      ловит раньше, чем вы запустите программу.</p>
+      <div class="price">
+        <b>12 000 ₽</b>
+        <s>15 000 ₽</s>
+        <small>за семь недель обучения и восемь недель доступа к стенду.<br>Первым десяти местам — скидка.</small>
+      </div>
+      <p>
+        <a class="btn" href="#signup">Записаться до 15.09.2018</a>
+        <a class="btn ghost" href="#program">Программа курса</a>
+      </p>
+      <ul class="factbar">
+        <li>1.0 — 15 мая 2015</li>
+        <li>релиз раз в 6 недель</li>
+        <li>stable means stable</li>
+      </ul>
+      <div class="joke">
+        <b>Segfault — это не ошибка вашей программы. Это отсутствие ошибки.
+        Rust превращает отсутствие ошибки в текст на экране.</b>
+      </div>
+      <p class="adnote" style="margin-top:18px">Страница датирована 5 сентября 2018 года:
+      дизайн, версия языка и обещания сделаны для этой даты.</p>
+    </div>
+    <div class="hero-side">
+      <img src="assets/images/ferris-crab.svg" alt="Краб-маскот курса">
+      <p>Набор на осенний поток 2018 года. Материалы курса — на диске,
+      репозиторий с примерами высылаем на почту после записи.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 02 -->
+<section id="promise" class="tint">
+  <div class="wrap">
+    <p class="eyebrow">Почему этот язык</p>
+    <h2>15 мая 2015 года язык перестал быть экспериментом</h2>
+    <p class="lede">Rust обещал не выдумать новое, а зашить в язык то, что в C и C++
+    десятилетиями держится на дисциплине и памяти программиста.</p>
+    <div class="cards">
+      <div class="card">
+        <span class="num">1</span>
+        <h3>До 1.0</h3>
+        <p>Эндрю Бинсток в январе 2014 года писал в Dr. Dobb's Journal, что Rust
+        «широко считают замечательно изящным языком», но внедрение тормозил
+        радикальный развал между версиями. Проблема была не в идее.</p>
+      </div>
+      <div class="card">
+        <span class="num">2</span>
+        <h3>Обещание</h3>
+        <p>Объявление 1.0: если код собирается на stable 1.0, он будет собираться
+        и на 1.x. Релизы — раз в шесть недель, три канала: nightly, beta, stable.
+        Формула эпохи: «stable means stable».</p>
+      </div>
+      <div class="card">
+        <span class="num">3</span>
+        <h3>Что гарантировали</h3>
+        <p>Система типов описана в том же объявлении как «кодификация лучших
+        практик, выточенных поколениями программистов на C и C++». То есть
+        запрет на ошибки в памяти вводился как дисциплина по умолчанию.</p>
+      </div>
+      <div class="card">
+        <span class="num">4</span>
+        <h3>Что было дальше</h3>
+        <p>2016 — первая версия Servo и код Rust в Firefox 45. 2017 — CSS-движок
+        Firefox (Quantum) на Rust; осенью 2017 Rust получает титул самого
+        «любимого» языка в опросе Stack Overflow. А редакция 2018 года с новыми
+        правилами заимствования только готовится — она выйдет в конце года.</p>
+      </div>
+    </div>
+    <div class="statline">
+      <div><b>1.0 + 1.1</b><span>обе версии вышли 15 мая 2015 года</span></div>
+      <div><b>6 недель</b><span>цикл релизов языка</span></div>
+      <div><b>3 канала</b><span>nightly / beta / stable</span></div>
+      <div><b>1400 / 5000</b><span>к 2016 году: контрибьюторов компилятора и библиотек на crates.io</span></div>
+    </div>
+    <p class="adnote">Цифры «не менее 1400 контрибьюторов» и «не менее 5000 библиотек»
+    приведены по презентации 2016 года.</p>
+  </div>
+</section>
+
+<!-- 03 -->
+<section id="program">
+  <div class="wrap">
+    <p class="eyebrow">Программа</p>
+    <h2>Восемь недель. Четыре лабораторных. Один проект</h2>
+    <p class="lede">Содержание курса — это разделы официальной документации тех лет:
+    владение, ссылки, время жизни, перемещение и заимствование, обобщения, потоки,
+    обработка ошибок.</p>
+    <div class="req-grid">
+      <div>
+        <table class="mono">
+          <tr><th>Неделя</th><th>Тема</th><th>Практика</th></tr>
+          <tr><td>1</td><td>Владение памятью и segfault'ы</td><td>разбор трёх чужих падений</td></tr>
+          <tr><td>2</td><td>Значения, ссылки, время жизни</td><td>переписать лабораторную по C</td></tr>
+          <tr><td>3</td><td>Перемещение и заимствование</td><td>задание, где «правильное» решение не собирается</td></tr>
+          <tr><td>4</td><td>Структуры, перечисления, ошибки</td><td>мини-парсер формата</td></tr>
+          <tr><td>5</td><td>Обобщения и типажи</td><td>обобщённый контейнер</td></tr>
+          <tr><td>6</td><td>Потоки без гонок данных</td><td>счётчик запросов в двух потоках</td></tr>
+          <tr><td>7</td><td>Result, Option, panic!</td><td>разбор мест, где бросать исключение опасно</td></tr>
+          <tr><td>8</td><td>Итоговый проект</td><td>защита: пять минут на вопросы</td></tr>
+        </table>
+      </div>
+      <div>
+        <h3 style="font-size:1.15rem">Что входит</h3>
+        <ul class="perks">
+          <li>методичка на 96 страниц</li>
+          <li><img src="assets/images/floppy.svg" width="16" height="16" alt=""> диск с примерами</li>
+          <li>доступ к стенду после занятий</li>
+          <li>разбор задач на второй паре</li>
+          <li>вторник и четверг, 18:00</li>
+          <li>защита проекта с рецензией</li>
+        </ul>
+        <div class="warn">Первые три недели будет казаться, что вы боретесь с
+        компилятором. Это не сбой: к четвёртой неделе вы начнёте писать код,
+        который невозможно уронить.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 -->
+<section id="ownership" class="dark">
+  <div class="wrap">
+    <p class="eyebrow">Суть курса</p>
+    <h2>Кто владеет каждым байтом</h2>
+    <p class="lede">Проверка владения выполняется во время сборки. Нарушение — не
+    падение программы, а текст ошибки с номером строки.</p>
+    <div class="diagram">
+      <div class="node"><b>Владение</b><span>у каждого значения ровно один владелец</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Заимствование</b><span>пока взята ссылка, владельцем остаётся другой</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><b>Время жизни</b><span>ссылка не может жить дольше того, на что указывает</span></div>
+    </div>
+    <div class="rules">
+      <div class="rule">
+        <h4><code>ownership</code> — владение</h4>
+        <p>Буфер освобождается в тот момент, когда его владелец выходит из области
+        видимости. Забыть <code>free</code> невозможно: освобождение не ваша задача.</p>
+      </div>
+      <div class="rule">
+        <h4><code>borrowing</code> — заимствование</h4>
+        <p>Ссылка даёт временный доступ. Пока ссылка жива, значение нельзя
+        забрать и нельзя изменить иначе.</p>
+      </div>
+      <div class="rule">
+        <h4><code>lifetimes</code> — время жизни</h4>
+        <p>Компилятор проверяет, что ссылка не переживёт источник. Ошибка
+        lifetimes — самая частая в первые недели.</p>
+      </div>
+    </div>
+    <div class="code">
+      <figure>
+        <figcaption>как на C — ошибка обнаруживается у пользователя</figcaption>
+<pre><span class="cm">/* C: освободили и пошли читать дальше */</span>
+<span class="kw">char</span> *buf = <span class="kw">malloc</span>(n);
+process(buf);
+<span class="kw">free</span>(buf);
+printf(<span class="num">"%s"</span>, buf);  <span class="cm">// segfault</span></pre>
+      </figure>
+      <figure>
+        <figcaption>как на Rust — ошибка обнаруживается при сборке</figcaption>
+<pre><span class="kw">let</span> buf = <span class="kw">vec</span>![<span class="num">0u8</span>; n];
+process(&amp;buf);
+<span class="cm">// используем buf — нельзя: значение
+// забрано, а не освобождено вручную</span>
+println!(<span class="num">"{}"</span>, buf[<span class="num">0</span>]);
+<span class="err">error[E0382]: use of moved value: `buf`</span>
+<span class="err">  --&gt; src/main.rs:14:5</span></pre>
+      </figure>
+    </div>
+    <table style="margin-top:28px">
+      <tr><th>Поведение</th><th>В 2018-м, на C</th><th>На Rust</th></tr>
+      <tr><td>Ошибка владения найдена</td><td>через месяц, в отчёте о падении</td><td>сразу, при сборке</td></tr>
+      <tr><td>Кто ищет</td><td>отладчик, valgrind, пользователь</td><td>компилятор</td></tr>
+      <tr><td>Время на поиск</td><td>часы</td><td>секунды</td></tr>
+      <tr><td>Стоимость исправления</td><td>откат релиза, срочная правка</td><td>правка до сборки</td></tr>
+    </table>
+    <p class="adnote" style="color:#a89c8a">Сравнение иллюстративное, а не
+    измеренное: оно показывает, где искать ошибку, а не сколько времени
+    она занимает.</p>
+    <p class="muted" style="margin-top:20px">Rust ловит не всё: он не защищает от
+    логических ошибок, от переполнения целых в рантайме и от кода, помеченного
+    <code style="font-family:var(--mono); color:#e79a6a">unsafe</code>. Он защищает
+    от ошибок владения памятью — а это самая частая причина падений в системном коде.</p>
+  </div>
+</section>
+
+<!-- 05 -->
+<section id="story" class="tint">
+  <div class="wrap">
+    <p class="eyebrow">Отзыв</p>
+    <h2>История одной лабораторной</h2>
+    <div class="quote">
+      <blockquote>«В феврале я сдал лабораторную по C — и она упала на чужом компьютере.
+      Препод смотрел на экран, потом на меня, и сказал, что это не моя программа.
+      Это была не моя программа: моя программа освободила буфер и пошла читать его дальше».</blockquote>
+      <div class="who">
+        <div class="avatar">АК</div>
+        <div><b>Анна К.</b><small>второй курс, группа ИВТ-31 · осенний поток 2018 года</small></div>
+      </div>
+      <p style="margin:20px 0 0">Два года она писала на C и Python: про segfault
+      знала, что «это где-то там, в памяти», и на лабораторных просто
+      перезапускала программу. На Rust первые три недели всё выглядело хуже:
+      программа не собирается, а не падает. К концу третьей недели стало понятно,
+      что компилятор повторяет ровно то, что раньше ловилось через месяц, — только
+      сразу и с номером строки. Лабораторная по владению памятью на C у неё больше
+      не воспроизводится: «компилятор не даёт».</p>
+      <div class="beforeafter">
+        <div><b>что было до</b><p>программа падает у пользователя</p></div>
+        <div><b>что было на третьей неделе</b><p>программа не собирается</p></div>
+        <div class="after"><b>что стало</b><p>программу невозможно написать так, чтобы она упала</p></div>
+      </div>
+      <p class="adnote">Анна — вымышленный персонаж. История собрана из типичных
+      ситуаций эпохи, которые описывали в интервью разработчики, переходившие с C на
+      Rust в 2015–2018 годах.</p>
+    </div>
+    <div class="pics">
+      <figure><img src="assets/images/workspace.svg" alt="Рабочее место: монитор, клавиатура, кружка, моховая доска">
+        <figcaption>Так выглядит место за занятием в 2018 году.</figcaption></figure>
+      <figure><img src="assets/images/panic-key.svg" alt="Клавиша panic! и подпись line 42, column 17">
+        <figcaption>Единственная «паника», которую вы вызываете сами: <code>panic!</code>
+        печатает номер строки и останавливает программу — это не падение по чужой
+        ошибке в памяти.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 06 -->
+<section id="ad">
+  <div class="wrap">
+    <p class="eyebrow">Рекламная полоса</p>
+    <h2>Полоса из журнала</h2>
+    <div class="ad">
+      <div class="folio">Компьютерные страницы · выпуск 11 · сентябрь 2018 · полоса 84</div>
+      <h3>Язык, который не падает</h3>
+      <div class="cols">
+        <p>Кто писал на C и видел segmentation fault на своём коде? Тот знает,
+        что ошибка в памяти стоит дороже всего остального вместе взятого.</p>
+        <p>Rust требует указать, кто владеет каждым байтом. Программа, в которой
+        это не указано, не запускается: она даже не собирается.</p>
+        <p>На первой неделе это выглядит как издевательство. На восьмой вы не
+        сможете вернуться к прежнему ощущению.</p>
+      </div>
+      <div class="folio-foot">Первый набор — 12 мест · диск с примерами в комплекте ·
+        кафедра информатики, ауд. 307, вторник и четверг 18:00</div>
+    </div>
+    <p class="adnote">Полоса воспроизводит манеру журнальной рекламы 2010-х, а не
+    конкретный выпуск: она придумана для этого проекта.</p>
+  </div>
+</section>
+
+<!-- 07 -->
+<section id="clients" class="tint dotted">
+  <div class="wrap">
+    <p class="eyebrow">Социальное доказательство</p>
+    <h2>Кто уже пишет на Rust</h2>
+    <p class="lede">В 2016 и 2017 годах на странице «Friends of Rust» перечислялись
+    организации, которые запустили Rust в продакшене. Страница выросла с 33
+    организаций в августе 2016 года до 74 в июне 2017-го.</p>
+    <div class="wall">
+      <div class="tile"><div class="mark">MOZ</div><b>Mozilla</b>
+        <p>«Building the Servo browser engine, integrating into Firefox, other projects».</p>
+        <span class="ru">Движок Servo и его интеграция в Firefox.</span></div>
+      <div class="tile"><div class="mark">NPM</div><b>npm, Inc.</b>
+        <p>«Replacing C and rewriting performance-critical bottlenecks in the registry service architecture».</p>
+        <span class="ru">Замена C и переписывание узких мест реестра.</span></div>
+      <div class="tile"><div class="mark">TIL</div><b>Tilde</b>
+        <p>«Optimizing Skylight, the Rails profiler».</p>
+        <span class="ru">Профилировщик рельсов Skylight.</span></div>
+      <div class="tile"><div class="mark">WIR</div><b>Wire</b>
+        <p>«Axolotl protocol implementation… cross-compiled for iOS and Android».</p>
+        <span class="ru">Криптографический протокол под iOS и Android.</span></div>
+      <div class="tile"><div class="mark">SMT</div><b>SmartThings</b>
+        <p>«Memory-safe embedded applications on our SmartThings Hub».</p>
+        <span class="ru">Безопасно написанные встраиваемые приложения.</span></div>
+      <div class="tile"><div class="mark">PGC</div><b>PingCAP</b>
+        <p>«Building a distributed key-value store with Rust and Raft».</p>
+        <span class="ru">Распределённое хранилище ключ-значение на Rust и Raft.</span></div>
+      <div class="tile"><div class="mark">PRT</div><b>Parity Technologies</b>
+        <p>«Powering the Ethereum revolution».</p>
+        <span class="ru">Инфраструктура Ethereum.</span></div>
+      <div class="tile"><div class="mark">CAN</div><b>Canonical</b>
+        <p>«Everything from server monitoring to middleware».</p>
+        <span class="ru">От мониторинга серверов до промежуточного ПО.</span></div>
+      <div class="tile"><div class="mark">TDG</div><b>Telenor Digital</b>
+        <p>«Increasing performance and reliability of a concurrent webhook delivery service».</p>
+        <span class="ru">Производительность и надёжность конкурентной доставки вебхуков.</span></div>
+    </div>
+    <div class="bars">
+      <div class="bar"><div class="col" style="height:100px"><span class="v">33</span></div>август 2016</div>
+      <div class="bar hi"><div class="col" style="height:224px"><span class="v">74</span></div>июнь 2017</div>
+    </div>
+    <p class="adnote">Названия и формулировки взяты с официальной страницы
+    «Friends of Rust» 2016–2017 годов. Логотипы компаний не используются: это их
+    товарные знаки. Список — самоотчёт компаний, а не рейтинг и не аудит кода.</p>
+  </div>
+</section>
+
+<!-- 08 -->
+<section id="requirements">
+  <div class="wrap">
+    <p class="eyebrow">Оборудование</p>
+    <h2>Что нужно, чтобы начать</h2>
+    <div class="req-grid">
+      <div>
+        <table class="mono leaders">
+          <tr><th>Параметр</th><th>Требование</th></tr>
+          <tr><td>Процессор</td><td>x86-64, два ядра и больше</td></tr>
+          <tr><td>Память</td><td>4 ГБ ОЗУ (8 ГБ, если хотите закрыть все задачи)</td></tr>
+          <tr><td>Место</td><td>2 ГБ на диске: компилятор, инструменты, проекты</td></tr>
+          <tr><td>Видеокарта</td><td>не требуется, но приветствуется</td></tr>
+          <tr><td>ОС</td><td>Windows 10, Ubuntu 16.04/18.04, Fedora 25–28, macOS Sierra или High Sierra</td></tr>
+          <tr><td>Редактор</td><td>любой текстовый; Visual Studio Code (с 14 апреля 2016) подойдёт</td></tr>
+          <tr><td>Язык</td><td>Rust 1.17.0 от 27 апреля 2017 — та версия, которую в 2017 году предлагала официальная страница</td></tr>
+        </table>
+        <div class="warn">Обязательное умение: уметь читать сообщение компилятора и искать
+        его в интернете. Первые две недели вы будете читать их много.</div>
+      </div>
+      <div>
+        <h3 style="font-size:1.15rem">Как проходят занятия</h3>
+        <ul class="perks">
+          <li>12 мест в одной аудитории</li>
+          <li>Linux на всех машинах</li>
+          <li>два занятия в неделю по 80 минут</li>
+          <li>теория 30 минут, практика 50 минут</li>
+          <li>доступ к стенду после занятий до 19:00</li>
+          <li>защита проекта — пять минут на вопросы</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pics">
+      <figure><img src="assets/images/terminal-crt.svg" alt="Монитор с сообщением компилятора">
+        <figcaption>Ошибка компиляции вместо падения программы.</figcaption></figure>
+      <figure><img src="assets/images/tower-case.svg" alt="Системный блок и монитор">
+        <figcaption>Стенд в аудитории: корпус, монитор, клавиатура.</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 09 -->
+<section id="signup" class="dark">
+  <div class="wrap">
+    <p class="eyebrow">Набор</p>
+    <h2>Набор открыт до 15 сентября 2018 года</h2>
+    <div class="enroll-grid">
+      <div>
+        <p class="lede">Группа — 12 человек. Восемь уже записались.</p>
+        <div class="seats">
+          <div class="bar" role="img" aria-label="Занято 8 мест из 12"><i></i></div>
+          <p>8 / 12 мест занято · осталось 4</p>
+        </div>
+        <div class="seven" id="countdown" aria-label="Обратный отсчёт до 15 сентября 2018 года"></div>
+        <ul class="terms">
+          <li>Предоплата 4 000 ₽, остаток — на первом занятии.</li>
+          <li>Возврат в течение первого занятия без объяснения причин.</li>
+          <li>Своим ноутбуком пользоваться можно, но стенд надёжнее.</li>
+          <li>Записи кода разбираются на второй паре без ограничения числа вопросов.</li>
+          <li>Если группа не соберётся — переносим на следующий поток и возвращаем всю сумму.</li>
+        </ul>
+      </div>
+      <div>
+        <form id="signupform" novalidate>
+          <div class="field">
+            <label for="fio">Фамилия и имя</label>
+            <input type="text" id="fio" name="fio" placeholder="Иванов Иван">
+          </div>
+          <div class="field">
+            <label for="grp">Группа</label>
+            <input type="text" id="grp" name="grp" placeholder="ИВТ-31">
+          </div>
+          <div class="field">
+            <label for="mail">Почта — пришлём ссылку на репозиторий с примерами</label>
+            <input type="email" id="mail" name="mail" placeholder="ivanov@university.ru">
+          </div>
+          <div class="field">
+            <label for="lang">Что уже писали</label>
+            <select id="lang" name="lang">
+              <option>C и C++</option>
+              <option>Python</option>
+              <option>что-то системное</option>
+              <option>пока ничего</option>
+            </select>
+          </div>
+          <label class="check"><input type="checkbox" id="autumn" checked>
+            <span>Хочу на осенний поток 2018 года</span></label>
+          <button class="btn" type="submit">Записаться</button>
+          <div class="done" id="done" role="status">
+            Заявка принята. Мы напишем в течение двух рабочих дней — если письма не
+            будет, напишите нам сами: мы не теряем письма.
+          </div>
+        </form>
+        <h3 style="font-size:1.15rem; margin-top:24px">Что вы получите</h3>
+        <ul class="perks">
+          <li>методичка 96 страниц</li><li>диск с примерами</li>
+          <li>доступ к стенду</li><li>две пары в неделю</li>
+          <li>разбор задач без лимита</li><li>чай с печенькой на защите</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <h4>FERRIS LAB</h4>
+        <p>Кафедра информатики, ауд. 307.<br>
+        Вторник и четверг, 18:00.<br>
+        Занятия бесплатны для студентов университета.</p>
+      </div>
+      <div>
+        <h4>Как открыть этот проект</h4>
+        <p>Файл <a href="index.html">index.html</a> открывается двойным щелчком,
+        без сервера и сборки. Материалы исследования лежат рядом:
+        <a href="research.md">research.md</a>, <a href="era.md">era.md</a>,
+        <a href="concept.md">concept.md</a>, <a href="sources.md">sources.md</a>.</p>
+      </div>
+      <div>
+        <h4>Что здесь настоящее</h4>
+        <p>Даты, цифры, слоганы и цитаты организаций про Rust — проверенные
+        факты 2015–2018 годов.</p>
+      </div>
+    </div>
+    <p class="disclaimer">Вымышлено: учебный центр FERRIS LAB, курс «Rust: не падает»,
+    цены, расписание, отзыв Анны К. и рекламная полоса. Иллюстрации нарисованы
+    специально для этого проекта и не являются графикой проекта Rust.
+    Учебный проект, вариант 36.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Страница живёт в 2018 году: отсчёт считается от даты публикации,
+  // а не от сегодняшней даты на компьютере посетителя.
+  var pageDate = new Date(2018, 8, 5);   // 5 сентября 2018
+  var deadline = new Date(2018, 8, 15);  // 15 сентября 2018
+  var days = Math.round((deadline - pageDate) / 86400000);
+  var box = document.getElementById('countdown');
+  if (box) {
+    var html = String(days).split('').map(function(d){
+      return '<span class="seg">' + d + '</span>';
+    }).join('');
+    box.innerHTML = html +
+      '<small>дней до 15.09.2018 · сегодня 05.09.2018</small>';
+  }
+  var form = document.getElementById('signupform');
+  var done = document.getElementById('done');
+  if (form) {
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      if (done) done.classList.add('on');
+    });
+  }
+})();
+</script>
+</body>
+</html>

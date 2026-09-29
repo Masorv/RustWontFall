@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 110" width="200" height="110" role="img" aria-label="Клавиша panic! крупно: осознанное падение с номером строки">
+  <title>Клавиша panic!</title>
+  <rect x="10" y="18" width="180" height="76" rx="4" fill="#3a3a3a"/>
+  <rect x="16" y="24" width="168" height="58" rx="2" fill="#1f1f1f"/>
+  <text x="100" y="62" font-family="Consolas, 'Courier New', monospace" font-size="26" fill="#c9302c" text-anchor="middle">panic!</text>
+  <text x="100" y="86" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#8a8a8a" text-anchor="middle">line 42, column 17</text>
+</svg>

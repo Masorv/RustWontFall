@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 200" width="220" height="200" role="img" aria-label="Краб-маскот в стиле плоских иллюстраций 2016-2018 годов">
+  <title>Маскот курса</title>
+  <!-- ноги -->
+  <g stroke="#b7410e" stroke-width="7" stroke-linecap="round" fill="none">
+    <path d="M62 140 l-30 18"/><path d="M50 152 l-24 6"/>
+    <path d="M84 150 l-14 26"/><path d="M74 164 l-4 22"/>
+    <path d="M136 150 l14 26"/><path d="M146 164 l4 22"/>
+    <path d="M158 140 l30 18"/><path d="M170 152 l24 6"/>
+  </g>
+  <!-- клешни -->
+  <g fill="#b7410e">
+    <path d="M56 84 a30 30 0 1 0 -26 -18 l14 -12 l-8 -12 l16 4 a30 30 0 0 1 4 38 z"/>
+    <path d="M164 84 a30 30 0 1 1 26 -18 l-14 -12 l8 -12 l-16 4 a30 30 0 0 1 -4 38 z"/>
+  </g>
+  <g fill="#f2ede3">
+    <path d="M34 60 a10 10 0 1 0 4 8 l6 -8 z"/>
+    <path d="M186 60 a10 10 0 1 1 -4 8 l-6 -8 z"/>
+  </g>
+  <!-- панцирь -->
+  <ellipse cx="110" cy="118" rx="52" ry="44" fill="#b7410e"/>
+  <path d="M74 106 a36 36 0 0 1 72 0 z" fill="#c9552a"/>
+  <!-- глаза -->
+  <g fill="#f2ede3">
+    <circle cx="90" cy="112" r="13"/><circle cx="130" cy="112" r="13"/>
+  </g>
+  <g fill="#1a1a1a">
+    <circle cx="92" cy="114" r="6"/><circle cx="132" cy="114" r="6"/>
+  </g>
+  <circle cx="94" cy="111" r="2" fill="#f2ede3"/>
+  <circle cx="134" cy="111" r="2" fill="#f2ede3"/>
+  <!-- рот -->
+  <path d="M92 136 q18 16 36 0" fill="none" stroke="#1a1a1a" stroke-width="5" stroke-linecap="round"/>
+  <!-- пятно ржавчины как знак эпохи -->
+  <circle cx="140" cy="140" r="5" fill="#8a2f0b"/>
+  <circle cx="150" cy="132" r="3" fill="#8a2f0b"/>
+</svg>

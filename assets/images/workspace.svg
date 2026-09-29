@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 220" width="300" height="220" role="img" aria-label="Рабочее место: монитор, клавиатура, кружка и моховая доска с распечатками">
+  <title>Рабочее место 2018 года</title>
+  <!-- доска -->
+  <rect x="12" y="10" width="150" height="96" fill="#d8c9a3" stroke="#a08a5f" stroke-width="3"/>
+  <g fill="#f6f1e6">
+    <rect x="24" y="24" width="42" height="54" transform="rotate(-4 45 51)"/>
+    <rect x="74" y="20" width="40" height="50" transform="rotate(3 94 45)"/>
+    <rect x="120" y="26" width="34" height="46" transform="rotate(-2 137 49)"/>
+  </g>
+  <g fill="#2e7d6e"><circle cx="45" cy="22" r="3"/><circle cx="94" cy="18" r="3"/><circle cx="137" cy="24" r="3"/></g>
+  <!-- стол -->
+  <rect x="0" y="168" width="300" height="10" fill="#8a6a4a"/>
+  <rect x="0" y="178" width="300" height="42" fill="#6f5540"/>
+  <!-- монитор -->
+  <rect x="178" y="24" width="110" height="76" rx="3" fill="#1a1a1a"/>
+  <rect x="186" y="32" width="94" height="58" fill="#101413"/>
+  <g fill="#2e7d6e">
+    <rect x="194" y="42" width="52" height="5"/><rect x="194" y="54" width="70" height="5"/>
+    <rect x="194" y="66" width="40" height="5"/>
+  </g>
+  <rect x="224" y="100" width="18" height="12" fill="#1a1a1a"/>
+  <rect x="204" y="112" width="58" height="8" rx="2" fill="#1a1a1a"/>
+  <!-- клавиатура -->
+  <rect x="182" y="132" width="104" height="26" rx="3" fill="#2b2b2b"/>
+  <g fill="#e8e2d4">
+    <rect x="188" y="138" width="8" height="6"/><rect x="200" y="138" width="8" height="6"/><rect x="212" y="138" width="8" height="6"/>
+    <rect x="224" y="138" width="8" height="6"/><rect x="236" y="138" width="8" height="6"/><rect x="248" y="138" width="8" height="6"/>
+    <rect x="188" y="148" width="14" height="6"/><rect x="206" y="148" width="14" height="6"/><rect x="224" y="148" width="14" height="6"/><rect x="242" y="148" width="14" height="6"/><rect x="260" y="148" width="14" height="6"/>
+  </g>
+  <!-- мышь -->
+  <rect x="146" y="136" width="22" height="30" rx="10" fill="#2b2b2b"/>
+  <!-- кружка -->
+  <rect x="106" y="140" width="26" height="30" rx="3" fill="#b7410e"/>
+  <path d="M132 146 q12 0 12 9 t-12 9" fill="none" stroke="#b7410e" stroke-width="5"/>
+</svg>
